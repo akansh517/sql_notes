@@ -1,0 +1,568 @@
+WHERE VS HAVING CLAUSE in sql
+================================
+
+
+
+I want to get students where students have joined from insta
+
+i have to aggregate the data based on source of joining
+
+select source_of_joining,count(*) as total from students group by source_of_joining;
+
+total is an alias
+
++-------------------+-------+
+| source_of_joining | total |
++-------------------+-------+
+| insta             |     3 |
+| linkedin          |     1 |
++-------------------+-------+
+
+
+
+i want to know the lead sources through with more than 1 person has registered
+
+select source_of_joining,count(*) as total from students group by source_of_joining where total > 1 ;
+
+The above query will not work bcz this where clause can be used before group by 
+that means 
+
+*****where clause is used good to filter indidvidual records before aggregation(any grouping has happened)
+
+So solution to this is by using having clause
+
+
+*****having is used after group by(aggregation) and it is mainly used to filter the records after the grouping has happened.
+
+select source_of_joining,count(*) as total from students group by source_of_joining having total > 1 ;
++-------------------+-------+
+| source_of_joining | total |
++-------------------+-------+
+| insta             |     3 |
++-------------------+-------+
+
+
+// i want to know the count of people who registered through linked in 
+
+select source_of_joining,count(*) as total from students group by source_of_joining having source_of_joining="insta";
+
++-------------------+-------+
+| source_of_joining | total |
++-------------------+-------+
+| insta             |     3 |
++-------------------+-------+
+
+in the above query we are doing complex aggregations and after that we are just filtering for insta 
+
+note:- we have to filter as early as possible so the better query will be
+
+select source_of_joining,count(*) as total from students where source_of_joining="insta" group by source_of_joining ;
+
+i am doing filtering before the doing the aggregation so that i only aggregate insta set of data ans it will save a lot of effort and have more better performance
+
+
+
+
+
+
+can we use where and having in same query 
+============================================
+
+
+the locations from which more than 1 student has joined & the student experience is more than 2 years
+
+select location,count(*) as total from students where years_of_exp > 2 group by location having total > 1
+
+i am doing filtering before the group by bcz i have to eliminate the records as early as possible so that i do not have to do more of grouping later bcz whatever we are writing in having 
+can only be checked after aggregation has happened bcz until we do the aggregation how do we know what's the count
+
+so thought process will be do filtering as early as possible so that we don not have heavy crunching and then later filtering it out
+
+
+
++----------+-------+
+| location | total |
++----------+-------+
+| punjab   |     2 |
++----------+-------+
+'
+
+so i can say that punjab is such location where 2 people have joined and all of the candidates have more than 2 years of experience
+
+
+
+1. where is used before group by and do filtering on individual records
+having is used after group by and do filtering on aggregated records.
+
+we can use where and having in the same query also.
+
+where is more performant than having..
+but it's that not evrything we can do where bcz sometimes you require to aggregate the data and then filter based on the aggregated data and there having is the only choice 
+but whenever you have to filter individual records than we should go for where and not having bcz if we do having before than we have do filtering later which is not a good scenario
+ 
+
+
+
+
+******************************************************SESSION 14 **************************************************************
+
+
+CREATE TABLE employee(
+firstname varchar(20),
+lastname varchar(20),
+age int,
+salary int,
+location varchar(20)
+);
+
+INSERT INTO employee VALUES('sachin','sharma',28,10000,'bangalore');
+INSERT INTO employee VALUES('shane','warne',30,20000,'bangalore');
+INSERT INTO employee VALUES('rohit','sharma',32,30000,'hyderabad');
+INSERT INTO employee VALUES('shikhar','dhawan',32,10000,'hyderabad');
+INSERT INTO employee VALUES('sachin','tendulkar',32,15000,'bangalore');
+INSERT INTO employee VALUES('ms','dhoni',35,60000,'delhi');
+INSERT INTO employee VALUES('bhajji','singh',35,40000,'delhi');
+
+
+
+-- i want to find out are from each location and avg salary at each location
+
+bangalore , 3
+hyderabad , 2
+delhi ,2
+
+
+select location,count(location) as total,avg(salary) as average from employee group by location ;
+
+
+Output: without alias
+
+location	count(location)	avg(salary)
+bangalore	3		15000.0000
+hyderabad	2		20000.0000
+delhi		2		50000.0000
+
+
+Output: with alias
+
+location	total	average
+bangalore	3	15000.0000
+hyderabad	2	20000.0000
+delhi		2	50000.0000
+
+--
+
+
+
+sachin		sharma		bangalore	3		15000.0000
+shane		warne		bangalore	3		15000.0000
+rohit		sharma		hyderabad	2		20000.0000
+shikhar		dhawan		hyderabad	2		20000.0000
+sachin		tendulkar	bangalore	3		15000.0000
+ms		dhoni		delhi		2		50000.0000
+bhajji		singh		delhi		2		50000.0000
+
+
+select firstname,lastname,location,count(location),avg(salary) from employee group by location;
+
+
+we can try achieving it using a join..
+
+select firstname ,lastname,location,total_count,avg_salary from employee 
+join (select location,count(location) as total_count ,avg(salary) as avg_salary from employee group by location) temptable
+on employee.location=temptable.location;
+
+Output: it throws error bcz it becomes confused while picking up the location
+
+ERROR 1052 (23000) at line 18: Column 'location' in field list is ambiguous
+
+so the aboce query can be rectified by using 
+ 
+select firstname ,lastname,employee.location,total_count,avg_salary from employee 
+join (select location,count(location) as total_count ,avg(salary) as avg_salary from employee group by location) temptable
+on employee.location=temptable.location;
+
+
+
+Output:
+
+firstname	lastname	location	total_count	avg_salary
+sachin	sharma	bangalore	3	15000.0000
+shane	warne	bangalore	3	15000.0000
+rohit	sharma	hyderabad	2	20000.0000
+shikhar	dhawan	hyderabad	2	20000.0000
+sachin	tendulkar	bangalore	3	15000.0000
+ms	dhoni	delhi	2	50000.0000
+bhajji	singh	delhi	2	50000.0000
+
+
+so we have achieved by using the join 
+but can we do it another easier way 
+
+
+EFFICIENT WAY 
+==============
+
+so we can use OVER PARTITION BY to achieve this easily  without much efforts joints 
+
+The benefit of using partition by is that you are able to use the non aggregated column also but with group by we are not able to use 
+
+how it internally works
+
+1.first it partition the data based on location e.g: bangalore data is partitioned ,hyderabad is in 1 partition and delhi is in  1 partition
+2.after that it will count for it
+
+select firstname,lastname,location,count(location) OVER(PARTITION BY location) as total,avg(salary) OVER (PARTITION BY location) as average from employee;
+
+//efficient and good way to get the same results easily
+Output:
+
+firstname	lastname	location	total	average
+sachin	sharma	bangalore	3	15000.0000
+shane	warne	bangalore	3	15000.0000
+sachin	tendulkar	bangalore	3	15000.0000
+ms	dhoni	delhi	2	50000.0000
+bhajji	singh	delhi	2	50000.0000
+rohit	sharma	hyderabad	2	20000.0000
+shikhar	dhawan	hyderabad	2	20000.0000
+
+on which col i have to do grouping so i will use PARTITION BY in this case instead of GROUP BY 
+
+so in this way we can use combination of OVER and PARTITION BY to club non-aggregated columns which are like (firstname,lastname,location)
+along with the aggregated columns which are (count(location) OVER(PARTITION BY location) as total,avg(salary) OVER (PARTITION BY location)  these two bcz directly group by does not work 
+
+
+
+
+****************************************************************************SESSION - 15 **************************************************************************
+
+
+ROW NUMBER 
+===========
+
+
+
+CREATE TABLE employee(
+firstname varchar(20),
+lastname varchar(20),
+age int,
+salary int,
+location varchar(20)
+);
+
+INSERT INTO employee VALUES('sachin','sharma',28,10000,'bangalore');
+INSERT INTO employee VALUES('shane','warne',30,20000,'bangalore');
+INSERT INTO employee VALUES('rohit','sharma',32,30000,'hyderabad');
+INSERT INTO employee VALUES('shikhar','dhawan',32,10000,'hyderabad');
+INSERT INTO employee VALUES('sachin','tendulkar',32,15000,'bangalore');
+INSERT INTO employee VALUES('ms','dhoni',35,60000,'delhi');
+INSERT INTO employee VALUES('bhajji','singh',35,40000,'delhi');
+
+
+
+i want to sort the salaries in descending order and the salary which is the highest that will come at the top but i want to give it number 1 ,the salary which is 2nd highest i want to give it number 2 and so on
+first sort it or order it based on salaries in descending order and than start assigning the numbers from one onwards
+
+select firstname,lastname,salary, row_number() over (order by salary desc) from employee;
+
+desc - descending 
+
+Note :========This row_number() cannot work when you are not using order by bcz what's the whole point of giving some numbering when you are not ordering it 
+so order by is mandatory when we are talking about row_number()
+
+so 
+
+
+Output:
+
+firstname	lastname	salary	row_number() over (order by salary desc)
+ms		dhoni		60000		1
+bhajji	singh	40000	2
+rohit	sharma	30000	3
+shane	warne	20000	4
+sachin	tendulkar	15000	5
+sachin	sharma	10000	6
+shikhar	dhawan	10000	7
+
+so first we order the salary in descending order and then assign the row number starting from one
+
+ ---find the 5th highest salary
+
+select * from (select firstname,lastname,salary,row_number() over (order by salary desc) as rownum from employee) temptable where rownum=5;
+
+firstname	lastname	salary	rownum
+sachin	tendulkar	15000	5
+
+so in this way we can calculate the 3rd,5th highest or any highest salary 
+
+so it is a very important fxn to use but remember if i do not give order by here it wont work bcz what's the whole point of giving some numbering when you are not ordering it in any logical way so it should be first ordered based on some logical way and then we start giving row numbers 
+so order by is mandatory when we are talking about row_number()
+
+
+--- the problem statement is to assign row numbers for partition based on each location
+
+fisrt it will clubbed it into partitions that means bangalore is one partition,hyderabad is another partiton and then delhi and within each partiton it is doing the ordering and then assigning the row numbers
+
+
+select firstname,lastname,location,salary,row_number() over (partition by location order by salary desc) as rownum from employee;
+
+Output:
+
+firstname	lastname	location	salary	rownum
+shane		warne		bangalore	20000	1
+sachin		tendulkar	bangalore	15000	2
+sachin		sharma		bangalore	10000	3
+ms		dhoni		delhi		60000	1
+bhajji	singh	delhi	40000	2
+rohit	sharma	hyderabad	30000	1
+shikhar	dhawan	hyderabad	10000	2
+
+whenever the partition changes the row  number starts from the 1 again
+
+--I want to get the highest salary getters from each location like from bangalore which person is getting the highest salary and so on
+
+
+select * from (select firstname,lastname,location,salary,row_number() over (partition by location order by salary desc) as rownum from employee) temptable where rownum=1;
+
+Output:
+
+firstname	lastname	location	salary	rownum
+shane	warne	bangalore	20000	1
+ms	dhoni	delhi	60000	1
+rohit	sharma	hyderabad	30000	1
+
+
+
+in this session we understood when we use row_number
+
+we should be using the order by clause if you do not use order by it won't work it won't accept at all
+we can also use the partition by  but it is -optional  and whenever we use partition by the number again starts from 1 for the next partition
+
+the rownumber starts from  1 for every partition
+
+
+
+
+******************************************************************************SESSION 16 **************************************************************************************
+
+RANK AND DENSE RANK
+=====================
+
+CREATE TABLE employee(
+firstname varchar(20),
+lastname varchar(20),
+age int,
+salary int,
+location varchar(20)
+);
+
+INSERT INTO employee VALUES('sachin','sharma',28,10000,'bangalore');
+INSERT INTO employee VALUES('shane','warne',30,20000,'bangalore');
+INSERT INTO employee VALUES('rohit','sharma',32,15000,'hyderabad');
+INSERT INTO employee VALUES('shikhar','dhawan',32,15000,'hyderabad');
+INSERT INTO employee VALUES('sachin','tendulkar',32,10000,'bangalore');
+INSERT INTO employee VALUES('ms','dhoni',35,60000,'delhi');
+INSERT INTO employee VALUES('bhajji','singh',35,40000,'delhi');
+
+select firstname,lastname,salary, row_number() over (order by salary desc) from employee;
+
+
+ ---find the 5th highest salary
+
+select * from (select firstname,lastname,salary,row_number() over (order by salary desc) as rownum from employee) temptable where rownum=5;
+
+
+ideally we should use row_number() when there are no duplicates but when there are duplicates then how does it makes sense that shikhar dhawan salary is 5th highest and sachin sharma salary is 6th highest so row number do not solve this problem of duplicates
+i.e row numbers cannot handle the duplicates properly
+
+so  that s=is where we will see how to use rank and dense rank 
+
+
+select firstname,lastname,salary, RANK() over (order by salary desc) from employee;
+
+select firstname,lastname,salary, DENSE_RANK() over (order by salary desc) from employee;
+
+order by is mandatory in case of RANK and DENSE_RANK also and partition by is optional bcz until we do the ordering then what's the point of assigning a rank or row number or dense rank
+
+Output:
+
+row_number()
+firstname	lastname	salary	row_number() over (order by salary desc)
+ms	dhoni	60000	1
+bhajji	singh	40000	2
+shane	warne	20000	3
+rohit	sharma	15000	4
+shikhar	dhawan	15000	5
+sachin	sharma	10000	6
+sachin	tendulkar	10000	7
+
+
+RANK()
+
+firstname	lastname	salary	RANK() over (order by salary desc)
+ms	dhoni	60000	1
+bhajji	singh	40000	2
+shane	warne	20000	3
+rohit	sharma	15000	4
+shikhar	dhawan	15000	4
+sachin	sharma	10000	6
+sachin	tendulkar	10000	6
+
+rank assigned to duplicates are same and it will skips some ranking when there are duplicates i.e it leaves holes in between like 5 is skipped in the baove example
+
+
+DENSE_RANK()
+
+firstname	lastname	salary	DENSE_RANK() over (order by salary desc)
+ms	dhoni	60000	1
+bhajji	singh	40000	2
+shane	warne	20000	3
+rohit	sharma	15000	4
+shikhar	dhawan	15000	4
+sachin	sharma	10000	5
+sachin	tendulkar	10000	5
+
+dense rank won't skip any ranking or holes in this the numbers are densely aligned 
+
+
+
+NOTE:
+======
+If the data set has no duplicates then row_number(),RANK() and DENSE_RANK() lead to similar results without any change ...
+only the difference comes when there are duplicates...
+
+so when there are duplicates :-
+row number is not recommended bcz it does not handle the situation well and we should be using rank and dense rank 
+
+rank-for duplicates same rank is assigned and for the next entry it skips the ranks...i.e it leaves the holes in between and it won't be continuous bcz some ranks can be skipped
+
+dense rank- it does not skips any ranks in between  i.e none of the rank will be skipped
+
+
+whenever you do not have duplicates use row_number
+
+
+----ques :=there is some competition 
+
+I want to find top 3 positions.. who have scored the highest marks
+
+	dense_rank      rank
+scores
+100 - 	1		1
+
+100-	1		1
+
+98	2		3
+
+97	3		4
+
+97	3		4
+
+96	4		6
+
+so if we are using dense rank then all the above 5 peoples should be awarded if we are looking for 3 positions or top three that the above 2 peoples are first second is one person and third are 2 persons
+
+
+by using normal rank there are only 3 people who should be awarded which are 1st(100) having rank-1 ,second(100) having rank-1 and  third(98) having rank-3
+but if we are consider dense_rank than i will consider all the 5 people
+
+RANK()
+
+firstname	lastname	salary	RANK() over (order by salary desc)
+ms	dhoni	60000	1
+bhajji	singh	40000	2
+shane	warne	20000	3
+rohit	sharma	15000	4
+shikhar	dhawan	15000	4
+sachin	sharma	10000	6
+sachin	tendulkar	10000	6
+
+consider in the above case there is no 5 but if we want to find who is the fifth person who came if we are using rank it won't show up
+but if we use dense_rank it will show up ...
+
+so it depends what you are using 
+
+
+select * from (select firstname,lastname,salary,RANK() over (order by salary desc) as rownum from employee) temptable where rownum=5;
+
+O/p:
+it don't show anything bcz there is no one having rownum=5 bcz it is getting skipped
+
+But if i will use DENSE_RANK
+
+firstname	lastname	salary	DENSE_RANK() over (order by salary desc)
+ms	dhoni	60000	1
+bhajji	singh	40000	2
+shane	warne	20000	3
+rohit	sharma	15000	4
+shikhar	dhawan	15000	4
+sachin	sharma	10000	5
+sachin	tendulkar	10000	5
+
+Output:
+
+firstname	lastname	salary	rownum
+sachin	sharma	10000	5
+sachin	tendulkar	10000	5
+
+bcz none of the ranks getting skipped in case of dense_rank so it shows the output
+
+
+--Finding the highest salary getters at each location
+
+select * from (select firstname,lastname,location,salary,RANK() over ( partition by location order by salary desc) as row_num from employee) temptable where row_num=1;
+
+Output:
+
+firstname	lastname	location	salary	row_num
+shane	warne	bangalore	20000	1
+ms	dhoni	delhi	60000	1
+rohit	sharma	hyderabad	15000	1
+shikhar	dhawan	hyderabad	15000	1
+
+
+--Finding the 5th highest salary
+
+select * from (select firstname,lastname,location,salary,DENSE_RANK() over ( order by salary desc) as row_num from employee) temptable where row_num=5;
+
+the inner query written within() will create a table  temptable which is like a derived table and we are using a inner query here 
+
+Output:
+
+firstname	lastname	location	salary	row_num
+sachin	sharma	bangalore	10000	5
+
+
+REMEMBER
+========
+It's mandatory to use the order by clause 
+we can also use the partition by - but its's optional
+The row number starts from 1 for every partition
+
+ROW_NUMBER
+
+RANK
+
+DENSE_RANK
+
+we should be aware of the above three conceptsi.e what's the similarities and difference between row_number,rank and dense_rank
+
+if there are no duplicates then row_number ,rank and dense_rank lead to similar results
+
+only the difference when there are duplicates
+
+rank- for duplicates same rank is assigned and for the next entry it skips the ranks...
+
+dense_rank-it does not skips any ranks in between
+
+whenever you do not have duplicates use row_number
+
+
+
+
+
+
+
+
+
+

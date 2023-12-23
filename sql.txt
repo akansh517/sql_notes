@@ -1,0 +1,1668 @@
+create table employee(
+ firstname varchar(20),
+middlename varchar(20),
+lastname varchar(20), 
+age INT,
+salary INT,
+location varchar(20)
+);
+
+INSERT INTO employee(firstname,middlename,lastname,age,salary,location) VALUES('kapil','kumar','sharma',28,10000,'bangalore');
+
+
+INSERT INTO employee(firstname,middlename,lastname,age,salary,location) VALUES('satish','kumar','sharma',28,10000,'bangalore');
+
+to see the data inside the table we use 
+select * from employee;
+
+if i dont want to put middlename 
+
+INSERT INTO employee(firstname,lastname,age,salary,location) VALUES('jatt','sharma',35,10000,'bangalore');
+
+if i am not giving column names like employee(firstname,lastname,age,salary,location) and simply write like this 
+
+INSERT INTO employee VALUES('jatt','sharma',35,10000,'bangalore');  
+then it will give me error bcz it consider all entries now it expect 6 values but actually in table there are 5 values so error will arise 
+
+1.method
+INSERT INTO employee(firstname,lastname,age,salary,location)  VALUES("at't",'sharma',35,10000,'bangalore');  
+
+2.method
+INSERT INTO employee(firstname,lastname,age,salary,location)  VALUES('rajes\'h','sharma',35,10000,'bangalore');  7
+
+
+for inserting multiple values we use cmd
+
+INSERT INTO employee(firstname,middlename,lastname,age,salary,location) VALUES('satish','kumar','sharma',28,10000,'bangalore'),('rahul','kumar','sharma',28,10000,'bangalore');
+
+if i want that firstname value cannot be null i will do
+
+create table employee(
+ firstname varchar(20) NOT NULL,
+middlename varchar(20),
+lastname varchar(20) NOT NULL, 
+age INT NOT NULL,
+salary INT NOT NULL,
+location varchar(20) NOT NULL
+);
+
+
+if my preference is to hire the employees from banagalore then i can use 
+
+# default value
+
+if you don't give any location then it will treated as a bangalore by default 
+
+create table employee(
+ firstname varchar(20) NOT NULL,
+middlename varchar(20),
+lastname varchar(20) NOT NULL, 
+age INT NOT NULL,
+salary INT NOT NULL,
+location varchar(20) DEFAULT 'bangalore'
+);
+
+INSERT INTO employee(firstname,lastname,age,salary,location) VALUES('satish','sharma',28,10000,'bangalore'),('rahul','sharma',28,10000,'bangalore');
+
+INSERT INTO employee(firstname,lastname,age,salary,location) VALUES('harsh','sharma',28,10000,'delhi');
+
+
+
+
+combination of not null with default 
+
+cannot set location null as an explicit value by doing this 
+
+
+
+create table employee(
+ firstname varchar(20) NOT NULL,
+middlename varchar(20),
+lastname varchar(20) NOT NULL, 
+age INT NOT NULL,
+salary INT NOT NULL,
+location varchar(20) NOT NULL DEFAULT 'bangalore'  
+);
+
+if i don't give anything in location then it will take default location as banaglore 
+
+INSERT INTO employee(firstname,lastname,age,salary) VALUES('harsh','sharma',28,10000);
+
+
+CRUD operations 
+
+insert ,multiple inserts
+datatype dismatch
+null and not null
+default values 
+combination of not null and default
+
+
+
+
+
+*********************************************SESSION -3 ***********************************************
+
+
+For a primary key null and repeated values are not allowes 
+
+1st way 
+create table employee(
+id int PRIMARY KEY,
+firstname varchar(20) NOT NULL,
+middlename varchar(20),
+lastname varchar(20) NOT NULL, 
+age INT NOT NULL,
+salary INT NOT NULL,
+location varchar(20) NOT NULL DEFAULT 'bangalore'  
+);
+
+
+2nd way to define p.k
+create table employee(
+id int,
+firstname varchar(20) NOT NULL,
+middlename varchar(20),
+lastname varchar(20) NOT NULL, 
+age INT NOT NULL,
+salary INT NOT NULL,
+location varchar(20) NOT NULL DEFAULT 'bangalore',
+PRIMARY KEY(id)
+);
+
+
+
+INSERT INTO employee(id,firstname,lastname,age,salary,location) VALUES(null,'satish','sharma',28,10000,'bangalore'),(2,'rahul','sharma',28,10000,'bangalore');
+
+
+
+by using AUTO_INCREMENT - if i don't want to manually give the value always and please start with 1 and then keep on incrementing that value and it is unique due to the increment on each time 
+
+create table employee(
+id int AUTO_INCREMENT,
+firstname varchar(20) NOT NULL,
+middlename varchar(20),
+lastname varchar(20) NOT NULL, 
+age INT NOT NULL,
+salary INT NOT NULL,
+location varchar(20) NOT NULL DEFAULT 'bangalore',
+PRIMARY KEY(id),
+);
+
+
+automatically increment the value in below values 
+
+INSERT INTO employee(firstname,lastname,age,salary,location) VALUES('satish','sharma',28,10000,'bangalore'),('rahul','sharma',28,10000,'bangalore');
+
+
+UNIQUE KEYS 
+
+You can have only 1 p.k
+
+and the p.k can't hold any NULL
+
+we should use p.k when we have to uniquely identify each record .
+
+
+
+we can have only 1 P.K and the P.K can't hold any null and we used P.K to distinctly identify or uniquely identify each record .
+
+unique key can hold null 
+
+for e.g- In mysql a U.K can hold any no. of null values 
+but in some of the other db's U.k can hold only 1 null
+
+The purpose of U.K is to make sure that the values do not duplicate 
+
+we can have only 1 P.K but multiple U.K in a table 
+
+
+
+
+create table employee(
+firstname varchar(20) NOT NULL,
+lastname varchar(20) NOT NULL, 
+age INT NOT NULL,
+PRIMARY KEY(firstname,lastname)
+);
+
+
+composite P.K in which firstname and lastname is used
+
+INSERT INTO employee VALUES('kapil','sharma',28);
+
+gives error if i write like this 
+
+mysql> INSERT INTO employee VALUES('kapil','sharma',28);
+Query OK, 1 row affected (0.01 sec)
+
+its unique bcz last name is diff
+
+mysql> INSERT INTO employee VALUES('kapil','sinha',28);
+Query OK, 1 row affected (0.00 sec)
+
+throws error due to same key
+
+mysql> INSERT INTO employee VALUES('kapil','sharma',28);
+ERROR 1062 (23000): Duplicate entry 'kapil-sharma' for key 'PRIMARY'
+
+
+UNIQUE KEY 
+
+
+create table employee(
+id int UNIQUE KEY,
+firstname varchar(20) NOT NULL,
+lastname varchar(20) NOT NULL, 
+age INT NOT NULL,
+);
+
+in this U.K i can also put value null 
+
+INSERT INTO employee VALUES(null,'kapil','sharma',28);
+
+
+throws error if same values put again 
+
+but we can put any no. of nulls 
+
+mysql> INSERT INTO employee VALUES(1,'kapil','sharma',28);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> INSERT INTO employee VALUES(1,'kapil','sharma',28);
+ERROR 1062 (23000): Duplicate entry '1' for key 'id'
+
+
+for e.g phone no.,email id can be U.KEYS but employee id is a primary key which uniquely identifies a employee
+
+
+combination of 2 cols unique key
+
+create table employee(
+id int,
+firstname varchar(20) NOT NULL,
+lastname varchar(20) NOT NULL, 
+age INT NOT NULL,
+UNIQUE KEY(id,firstname)
+);
+
+
+session summary 
+
+P.K
+
+AUTO INCREMENT KEYS are very good candidates to be a p.K bcz we don't worry about incrementing the value it will automatically be incremented
+
+U.K
+
+PRIMARY KEY VS UNIQUE KEY 
+
+
+Purpose of U.K - we can have distinct values for a column 
+
+
+
+
+
+*********************************************************SESSION 4 ***********************************************************
+
+Update,Alter,Delete DDL vs DML,Truncate VS  DElete
+
+CRUD
+
+C-CREATE
+R-READ
+U-UPDATE
+D-DELETE
+
+
+
+
+INSERT INTO employee(id,firstname,lastname,age,salary) VALUES(1,'kapil','sharma',28,10000);
+
+
+INSERT INTO employee(id,firstname,lastname,age,salary) VALUES(2,'ramu','sharma',25,20000);
+
+
+INSERT INTO employee(id,firstname,lastname,age,salary) VALUES(3,'harry','sharma',27,40000);
+
+SELECT
+
+SELECTING ALL COLUMNS 
+
+select * from employee;
+
+if i want 2 cols firstname and lastname instead of all columns
+then i will use
+
+
+SELECTING SPECIFIC COLS
+
+select firstname,lastname from employee;
+
+IF I WANT ONLY 2 ROWS BASED ON SOME CONDITION OR FILTER 
+ IF I WANT EMPLOYEE DATA WHOSE AGE IS GREATER THAN 26
+
+Select by applying a where clause (filter condition)
+
+SELECT * FROM employee where age>26;
+
+select * from employee where firstname='ramu';
+
+By dafault it is case insesnitive we can write the queries in uppercase as well as in lowercase 
+
+
+if i want to make case sensitive then  i will use keyword binary which match the specific case
+
+select * from employee where binary firstname='Ramu';
+
+
+---ALIAS
+use the as keyword 
+
+select firstname as name,lastname as surname from employee;
+
+Select is basically a read operation in crud
+
+----UPDATE
+
+if i want to update the lastname of any name
+then i will do
+
+update employee set lastname='sinha ' where firstname='ramu';
+
+for changing the location of ramu i will write query as
+
+update employee set location='delhi' where firstname='ramu';
+
+if i write like this 
+
+update employee set loaction='delhi';
+
+this query will update all the records location to delhi 
+
+if i want to increase the salary of each employee by 5000
+
+update employee set salary=salary+5000;
+
+
+we can use logical and or operator when we want to filter based on multiple conditions 
+
+update employee set location='punjab' where firstname='ramu' and lastname='sinha';
+
+
+---DELETE 
+
+iF I WANT TO DELETE THE RECORD WHOSE ID=3
+
+delete from employee where id=3;
+
+IF I WANT TO DELETE ALL THE RECORDS 
+
+delete from employee;
+
+
+---ALTER COMMAND
+
+alter cmd is used to alter the structure of the table i.e schema of the table
+for e.g: if i want to increase the datatype of any column then i will use alter cmd for extending the limit of datatype
+so it deals with structure manipulation where
+update deals with data manipulation
+
+If i want to add column jobtitle
+
+alter table employee add column jobtitle varchar(50);
+
+
+if i want to increase the length of the name  modify the column
+
+alter table employee modify firstname varchar(30);
+
+if i wnat to remove the primary key from table then i will use
+
+alter table employee drop primary key;
+
+for adding the primary key i will use this will add the primary key to id column 
+
+alter table employee add primary key(id);
+
+
+
+
+
+DDL VS DML
+==========
+
+Data definition lang. -deals with table structure
+
+create,alter ,drop -ddl cmds
+
+Data manipulation lang.-here we deal with data directlt
+
+update ,insert,delete-dml cmds
+
+
+
+
+delete from employee; dml cmd
+
+delete all the records from table
+
+we are doing something with data instead of structure 
+
+delete cmd delete the records individually one by one and takes a lot of time 
+
+
+Truncate from employee; will do the same thing 
+
+truncate also remove all the records - ddl cmd
+
+truncate internally drops the table and recreates it .
+
+If you have a lot of records in the table and you want to delete all of them then we should prefer truncate bcz it will be more efficient
+
+truncate table employee ;
+
+
+
+
+*******************************************************SESSION 5*************************************************************
+
+FOREIGN KEY CONSTRAINT
+
+CREATE TABLE students(
+student_id  INT AUTO_INCREMENT ,
+student_fname varchar(30) NOT NULL,
+student_lname varchar(30) NOT NULL,
+student_mname varchar(30),
+student_email varchar(30) NOT NULL,
+student_phone varchar(15) NOT NULL,
+student_alternate_phone varchar(15),
+enrollment_date TIMESTAMP NOT NULL, 
+years_of_exp INT NOT NULL,
+student_company varchar(30) ,
+batch_date varchar(30) NOT NULL ,
+source_of_joining varchar(30) NOT NULL,
+location varchar(30) NOT NULL,
+primary key(student_id),
+unique key(student_email)
+);
+
+I am not giving the id bcz it will automatically incremented and enrollment date bcz it will took the current date and time
+
+seed data :- Initially when you insert something in table in one go or we use word seed data to talk about initial insert statements that we make as a whole in bulk
+
+
+SEED DATA FOr STUDENTS 
+
+
+
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('ROHIT','SHARMA','rohit123@gmail.com',56789,5,'dell','05-05-2001','linkedin','delhi');
+
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('MOHIT','SHARMA','mohit123@gmail.com',567891,5,'apple','05-10-2001','insta','punjab');
+
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('SOHIT','SHARMA','sohit234@gmail.com',56789,4,'incture','05-12-2001','linkedin','delhi');
+
+
+select student_id ,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students;
+
+
+If i want to add mutiple course with their different attributes then i will create a course table
+
+CREATE TABLE courses(
+course_id int NOT NULL,
+course_name varchar(30) NOT NULL,
+course_duration_months int NOT NULL,
+course_fee INT NOT NULL,
+PRIMARY KEY(course_id)
+);
+
+SEED DATA FOR COURSES
+
+INSERT INTO courses values(1,'big data',6,50000);
+INSERT INTO courses values(2,'web development',3,25000);
+INSERT INTO courses values(3,'data science',2,15000);
+INSERT INTO courses values(4,'devops',1,10000);
+
+
+drop table students;
+
+now i have to add one column in students which is selected_courses in which i will use the default courses as big data so default 1
+
+CREATE TABLE students(
+student_id  INT AUTO_INCREMENT ,
+student_fname varchar(30) NOT NULL,
+student_lname varchar(30) NOT NULL,
+student_mname varchar(30),
+student_email varchar(30) NOT NULL,
+student_phone varchar(15) NOT NULL,
+student_alternate_phone varchar(15),
+enrollment_date TIMESTAMP NOT NULL, 
+selected_course INT NOT NULL DEFAULT 1,
+years_of_exp INT NOT NULL,
+student_company varchar(30) ,
+batch_date varchar(30) NOT NULL ,
+source_of_joining varchar(30) NOT NULL,
+location varchar(30) NOT NULL,
+primary key(student_id),
+unique key(student_email)
+);
+
+
+students seed data 2
+
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,selected_course,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('ROHIT','SHARMA','rohit123@gmail.com',56789,2,5,'dell','05-05-2001','linkedin','delhi');
+
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,selected_course,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('MOHIT','SHARMA','mohit123@gmail.com',567891,4,3,'apple','05-10-2001','insta','punjab');
+
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,selected_course,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('SOHIT','SHARMA','sohit234@gmail.com',56789,1,3,'incture','05-12-2001','linkedin','delhi');
+
+select student_id ,enrollment_date,selected_course,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students;
+
+                      ************************if some course is not present in the course but it is putting into my database so i will handle this case using foreign key constraint
+
+drop table students;
+
+in selected course i have to check whether the course_id is valid or not which i am putting into the table if it is present in the course_id then it is fine otherwise we have to put a contsraint on the selected course
+
+
+
+In this scenario selected course is dependent upon course table course_id column to see whether the course_id is valid or not
+ 
+foreign key(selected_course) REFERENCES courses(course_id)
+
+If the course_id is not there then we will not be able to insert it
+
+In this case parent table is courses table bcz we have a dependency on that 
+and student table is the child table bcz it is dependent table
+
+CREATE TABLE students(
+student_id  INT AUTO_INCREMENT ,
+student_fname varchar(30) NOT NULL,
+student_lname varchar(30) NOT NULL,
+student_mname varchar(30),
+student_email varchar(30) NOT NULL,
+student_phone varchar(15) NOT NULL,
+student_alternate_phone varchar(15),
+enrollment_date TIMESTAMP NOT NULL, 
+selected_course INT NOT NULL DEFAULT 1,
+years_of_exp INT NOT NULL,
+student_company varchar(30) ,
+batch_date varchar(30) NOT NULL ,
+source_of_joining varchar(30) NOT NULL,
+location varchar(30) NOT NULL,
+primary key(student_id),
+unique key(student_email),
+foreign key(selected_course) REFERENCES courses(course_id)
+);
+
+
+
+
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,selected_course,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('ROHIT','SHARMA','rohit123@gmail.com',56789,2,5,'dell','05-05-2001','linkedin','delhi');
+
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,selected_course,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('MOHIT','SHARMA','mohit123@gmail.com',567891,4,3,'apple','05-10-2001','insta','punjab');
+
+
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,selected_course,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('TOMMY','SHARMA','tommy123@gmail.com',567891,4,3,'apple','05-10-2001','insta','punjab');
+
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,selected_course,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('RONNY','JAIN','ronny123@gmail.com',567891,4,3,'apple','05-10-2001','insta','hyderabad');
+
+I will be able to add only that data for which the course_id is between 1 -4 
+
+
+the below statement give me error due to invalid course_id whcih is not existing
+INSERT INTO students(student_fname,student_lname,student_email,student_phone,selected_course,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('SOHIT','SHARMA','sohit234@gmail.com',56789,5,3,'incture','05-12-2001','linkedin','delhi');
+
+ERROR:
+mysql> INSERT INTO students(student_fname,student_lname,student_email,student_phone,selected_course,years_of_exp,student_company,batch_date,source_of_joining,location) VALUES('S
+OHIT','SHARMA','sohit234@gmail.com',56789,5,3,'incture','05-12-2001','linkedin','delhi');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`jain`.`students`, CONSTRAINT `students_ibfk_1` FOREIGN KEY (`selected_course`) REFERENCES
+`courses` (`course_id`))
+
+
+
+
+If i want to discontinue the course 2 then i will do
+
+
+delete from courses where course_id=2;
+
+mysql> delete from courses where course_id=2;
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`jain`.`students`, CONSTRAINT `students_ibfk_1` FOREIGN KEY (`selected_course`) REFEREN
+CES `courses` (`course_id`))
+It is giving me error bcz one of the students already opted the course 2 so if i want to delete that course than my data will violated but if i want to delete course id =3 it is valid bcz none of the students opted that course and data will not be violated 
+delete from courses where course_id=3;
+
+
+
+bookish knowldege
+
+
+the foreign key constraint is used to prevent actions that would destroy links between two tables .
+
+a foreign key is a field in one table that refers to the primary key in another table in this example foreign key is selected_course that refers to the coourse_id which is primary key in courses table.
+
+selected_course is a foreign key in students table which refers to the course_id(primary key) in course table.
+
+
+The table with the foreign key is called child table and the table with the primary key is called parent or referenced table.
+
+
+NOT NULL
+UNIQUE KEY
+PRIMARY KEY
+FOREIGN KEY
+
+constraints means we are defining some rules only based on that data should go if the rule is not satisfied data should not go into the table
+
+constraints are used to limit the type of the data that goes into a table 
+
+This ensures the accuracy and reliability of the data is maintained .
+
+If there is any violation between the constraint then the action is violated.
+
+Some other databases other than mysql there are also some constraints which is 
+CHECK constraint(NOT supported in mysql)
+
+which checks
+
+check age>26
+
+i.e if age is greater than 26 then the action is accepted otherwise it will not accept that action 
+
+
+
+
+*********************************************************SESSION - 6 *****************************************************************
+
+
+
+DISTINCT
+
+ORDER BY
+
+LIMIT
+
+LIKE
+
+
+i want to know from which all locations students are coming 
+
+select DISTINCT location from students;
+ 
+select DISTINCT student_company  from students;
+
+select DISTINCT source_of_joining  from students;
+
+
+
+ORDER BY CLAUSE: if i want to apply some ordering to the data then i have to use this order by clause
+which basically order the table according to some attribute 
+for e.g:
+
+select student_id ,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students ORDER BY years_of_exp;
+
+the above statement will sort the data basis on the years of experience 
+
+if i want to sort the fname then i will do this and the query will sort the fname on the basis of dictionary
+
+select student_fname from students ORDER BY student_fname;
+
+ORDER BY whatever we are having need not be a part of the select statement
+
+select student_fname from students ORDER BY years_of_exp;
+
+select student_fname,years_of_exp from students ORDER BY years_of_exp;
+
++---------------+--------------+
+| student_fname | years_of_exp |
++---------------+--------------+
+| MOHIT         |            3 |
+| TOMMY         |            3 |
+| RONNY         |            3 |
+| ROHIT         |            5 |
++---------------+--------------+
+
+
+if i want to sort in descending order  then i will use desc keyword
+
+i want to sort the statement acc. to 2nd column so i can mention col name or col no.
+
+select student_fname,years_of_exp from students ORDER BY 2 desc;
+
+2 level sorting we will use 2nd parameter when there is a clash in values of years_of_exp then f_name will sort to the names
+
+select student_fname,years_of_exp from students ORDER BY years_of_exp,student_fname;
+
++---------------+--------------+
+| student_fname | years_of_exp |
++---------------+--------------+
+| MOHIT         |            3 |
+| RONNY         |            3 |
+| TOMMY         |            3 |
+| ROHIT         |            5 |
++---------------+--------------+
+
+
+
+			LIMIT
+
+
+limit has to be used with order by in order to get the proper results
+
+
+get 3 candidates with least experience then i will write LIMIT 3 at the end of the below query
+
+select student_id ,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students ORDER BY years_of_exp  LIMIT 3;
+
+highest experience 3 candidates
+
+select student_id ,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students ORDER BY years_of_exp desc  LIMIT 3;
+
+statement:-
+want to know that from which sources last 4 candidates have enrolled
+
+select source_of_joining from students order by enrollment_date desc limit 4;
+
+
+
+
+
+If i want to remove redundancy then i will use DISTINCT keyword
+
+
+---THIS QUERY WON'T WORK 
+
+select distinct source_of_joining from students order by enrollment_date desc limit 4; 
+but the statemnt don't work 
+
+
+
+select student_fname from students order by enrollment_date desc limit 1;
+
+select student_id ,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students ORDER BY enrollment_date  desc LIMIT 1;
+
+
+if i write LIMIT 0,3 then the limit will take 2 parameters and the first paraemter from where we start and the last parameter is 3 where we end i.e we start from 1st row and end at 3 row
+
+select * from students order by years_of_exp limit 3,2;
+
+this means we are starting from 4th row and end at 5th row
+i.e going 2 steps further from the 4th row 
+
+these are the candidates who have joined at 4th and 5th place
+
+
+LIKE
+=====
+
+If i want fuzzy match kind of i.e give me the things which looks like  this 
+
+e.g:- give me all students whose name starts with oh that's a fuzzy match and it is written by using LIKE
+
+select student_id ,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students where student_fname LIKE  '%oh%';
+
++------------+---------------------+---------------+--------------------+--------------+-----------------+------------+-------------------+----------+
+| student_id | enrollment_date     | student_fname | student_email      | years_of_exp | student_company | batch_date | source_of_joining | location |
++------------+---------------------+---------------+--------------------+--------------+-----------------+------------+-------------------+----------+
+|          1 | 2023-09-22 09:11:42 | ROHIT         | rohit123@gmail.com |            5 | dell            | 05-05-2001 | linkedin          | delhi    |
+|          2 | 2023-09-22 09:11:43 | MOHIT         | mohit123@gmail.com |            3 | apple           | 05-10-2001 | insta             | punjab   |
++------------+---------------------+---------------+--------------------+--------------+-----------------+------------+-------------------+----------+
+
+
+% is called as wild card character indicating it can be anything
+
+If i want that name whose name starts with mo and after mo whatever there can be present then i will use the query 
+
+select student_id ,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students where student_fname LIKE  'mo%';
+
+i delete the % from beginning bcz i want that my name strictly starts with mo 
+
+if i want all the names whose names end with it then i will remove % from end bcz i strictly want it at the end of the name and in front whatver can come will be accepted
+
+select student_id ,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students where student_fname LIKE  '%it';
+
+
+% is a wild card character i.e it means 0 or more characters()
+_ is a wild card char i.e (exactly one character)
+
+
+i want the name who have only five charcters in their f_name then i write the query as follow
+
+then i will use next wild card character i.e is _
+
+_ is the wild card character which says exactly one character and it can be anything
+
+If i write LIKE '_____' , SO i have given 5 _ what i am trying to say that there should be exactly 5 characters and those charcters can be anything
+
+select student_id ,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students where student_fname LIKE  '_____';
+
+
+
+\ (backslash) :- is the escape character we can tell the system that do not consider it like a wild card character .
+
+i.e if i want the name whose name starts with '%\_it'
+
+select student_id ,enrollment_date,student_fname,student_email,years_of_exp,student_company,batch_date,source_of_joining,location from students where student_fname LIKE  '%\_it'; 
+ now _ will be treated as a charcater instead of wild card by writing this 
+
+ 
+
+
+
+*****************************************************************************  SESSION - 7 *************************************************************************************
+
+Order of execution in sql
+
+
+select distinct source_of_joining from students order by enrollment_date desc; 
+
+we are using both order by and distinct
+
+select source_of_joining from students;
+
+order of execution 
+==================
+
+first from will execute and then select will execute
+
+FROM   (Loading the table)
+
+SELECT (Projecting the column which i have selected)
+
+for e.g:-
+
+select source_of_joining,enrollment_date from students ;
+ Order of execution:
+
+FROM (LOADING THE STUDENT TABLE)
+
+SELECT(PROJECTING source_of_joining,enrollment_date)
+
+
+select source_of_joining,enrollment_date from students order by enrollment_date;
+
+FROM (LOADING THE STUDENT TABLE)
+select * from students;
+
+SELECT(PROJECTING source_of_joining,enrollment_date)  
+only projecting source_of_joining,enrollment_date instead of all columns
+
+select source_of_joining,enrollment_date from students;
+
+
+ORDER BY(based on enrollment_date it will be order by) 
+
+ordering the columns basis on the enrollment_date
+
+select source_of_joining,enrollment_date from students order by enrollment_date;
+
+
+
+
+
+ Order of execution:
+
+FROM (LOADING THE STUDENT TABLE)
+select * from students;
+
+SELECT(PROJECTING source_of_joining,enrollment_date)  
+only projecting source_of_joining,enrollment_date instead of all columns
+
+bcz enrollment_date has dependency later on system will not discard enrollment date and stills keeps as a part of projection bcz system is intelligent even though we have not requested
+
+select source_of_joining,enrollment_date from students;
+
+
+ORDER BY(based on enrollment_date it will be order by) 
+
+select source_of_joining from students order by enrollment_date;  
+
+the above statement will sort acc. to the enrollment date after that it since we have not asked for the enrollment_date it will discard it later it won't show this 
+it will sort it based on the enrollment date but while showing the o/p it won't show bcz we have not requested why system has to keep it in step 2 so that order by can be performed later
+
+
+
+Order of Execution 
+
+select DISTINCT source_of_joining from students order by enrollment_date;  //distinct only on source_of_joining
+
+
+FROM (LOADING THE STUDENT TABLE)
+select * from students;
+
+SELECT(PROJECTING source_of_joining,enrollment_date)   //enrollment_date is given by system 
+only projecting source_of_joining,enrollment_date instead of all columns
+
+select source_of_joining,enrollment_date from students;
+
+
+DISTINCT(
+
+earlier we want the below 
+select DISTINCT source_of_joining from students;  
+
+now we want the source_of_joining,enrollment_date 
+select DISTINCT source_of_joining,enrollment_date from students ;   //distinct is happening on the combination of both these 2 things rather than logically we want to achieve has gone wrong i.e semantics have gone so wrong that this won't work that way and due to this sql gives an error actually and due to this system gives an error bcz logically things have gone wrong
+
+//distinct will happen on both the columns which is logically wrong
+
+
+
+ORDER BY(based on enrollment_date it will be order by) 
+
+ordering the columns basis on the enrollment_date
+
+select DISTINCT source_of_joining from students order by enrollment_date;  
+
+this query does not work bcz in the end if the system would have given us some answer it would be the wrong answer not the correct one that's why rather than showing wrong answer it says that no this is not correct you have to recreate the query
+
+
+
+
+
+********************************************************************SESSION 8************************************************************
+
+AGGREGATE FUNCTIONS :-
+=====================
+
+Aggregate fxns are used where we talk about group of things and then we get 1 final output .
+
+
+
+COUNT:- count is an aggregate fxn which is giving us an aggregated answer that how many records are there 
+
+
+if i have to calculate no. of rows in the table then i will use count(*) aggregate fxn
+
+select count(*) from students;
+
+
+
+from how many companies the students are joining my course
+
+select count(DISTINCT student_company) from students;
++---------------------------------+
+| count(DISTINCT student_company) |
++---------------------------------+
+|                               2 |
++---------------------------------+
+
+select count(DISTINCT student_company) as no_of_companies from students;
+
+the column name will be now no_of_companies now
+
+if i want to find from how many locations students are joining
+
+select count(DISTINCT locations) from students;
+
+
+if i want to find the people who have registered for may batch 
+to find that i can use the wild card character like % , -
+
+in the below statement i have used % means anything can be there but the month should be may i.e 05 and after any year can be there 
+select count(*) from students where batch_date like '%-05-%';
+
+if i want to count how many students have enrolled for batch starting from 05
+
+select count(*) from students where batch_date like '05-%';
+
+so count is an aggregate fxn which is giving us an aggregated answer that how many records are there 
+
+
+
+
+						GROUP BY :-  we want to group the data based on some logic or based on some category 
+
+why we are doing grouping it - to do something later what is that something that is doing aggregate fxns or applying aggregate fxns 
+
+
+i.e all the people in the apple will be grouped together
+
+e.g :all the people who joined from the linked in can be grouped together
+
+
+if i want to see how many people joined through the insta then i will do this query
+
+ques : what i want is to know that how many people have joined my course got to know about me through
+
+linkedin - 5
+
+google  - 2
+
+insta -3
+
+i have to do group by on source_of_joining
+
+select  source_of_joining from students;
+
+
+select source_of_joining,count(*) from students GROUP BY source_of_joining ;
+
++-------------------+----------+
+| source_of_joining | count(*) |
++-------------------+----------+
+| insta             |        3 |
+| linkedin          |        1 |
++-------------------+----------+
+
+if u are having something as a part of your grouping column right that if you are grouping on something that should always be in your select bcz otherwise it does not make sense or it is logically incorrect and even system won't accept
+
+
+it will apply the GROUP BY clause on location if i want to know from which locations the students are joining
+
+select location,count(*) from students GROUP BY location;
+
++-----------+----------+
+| location  | count(*) |
++-----------+----------+
+| delhi     |        1 |
+| hyderabad |        1 |
+| punjab    |        2 |
++-----------+----------+
+
+
+
+This will not work 
+
+
+select location,count(*) from students GROUP BY source_of_joining;
+
+
+
+
+If i want to find that from punjab people who got to know me up from insta punjab these many people have joined 
+
+if i want to grouping through 2 columns i.e location and source of joining
+
+select location,source_of_joining,count(*) from students GROUP BY location,source_of_joining;
+
++-----------+-------------------+----------+
+| location  | source_of_joining | count(*) |
++-----------+-------------------+----------+
+| delhi     | linkedin          |        1 |
+| hyderabad | insta             |        1 |
+| punjab    | insta             |        2 |
++-----------+-------------------+----------+
+
+there are 2 people from punjab who get to know about me from punjab through insta
+
+for each course how many people are enrolled
+
+select selected_course,count(*) from students GROUP BY selected_course; 
+
++-----------------+----------+
+| selected_course | count(*) |
++-----------------+----------+
+|               2 |        1 |
+|               4 |        3 |
++-----------------+----------+
+
+for course_id 2 1 student is enrolled and for course_id 4 3 students are enrolled
+
+if i want to find for fifth october how many course id ones are sold and how many devops are sold;
+
+select batch_date,selected_course,count(*) from students GROUP BY batch_date,selected_course;
+
+
+the whole indent to create this group to do a aggregation function 
+
+
+
+MIN , MAX
+==========
+
+
+if i want to know what is the minimum experience among my students who have joined
+
+select MIN(years_of_exp) from students;
+
+if i want to find max
+
+select MAX(years_of_exp) from students;
+
+
+what if i want to get min years of experience and the student name 
+
+
+---this won't work
+SELECT MIN(years_of_exp),student_fname from students
+
+
+
+select student_fname from students ORDER BY years_of_exp limit 1;
+
+
+if i want to know people who are joining through insta what is the maximum experience among that 
+
+so i have to group by based on source_of_joining and then i want to get max experience
+
+
+each source of joining i want to get max experience 
+
+select source_of_joining,MAX(years_of_exp) from students GROUP BY source_of_joining;
+
++-------------------+-------------------+
+| source_of_joining | MAX(years_of_exp) |
++-------------------+-------------------+
+| insta             |                 3 |
+| linkedin          |                 5 |
++-------------------+-------------------+
+
+the student who have joined me from insta has max exp. 5 and who join through insta has max exp 3
+
+
+
+
+
+
+
+SUM
+====
+if i want total experience of the candidates who have joined me through insta
+
+select source_of_joining,SUM(years_of_exp) from students GROUP BY source_of_joining;
+
++-------------------+-------------------+
+| source_of_joining | SUM(years_of_exp) |
++-------------------+-------------------+
+| insta             |                 9 |
+| linkedin          |                 5 |
++-------------------+-------------------+
+
+the students who joined from insta has total combined exp of 9 yrs
+
+
+AVG
+====
+
+
+if i want to calculate the average experience from the people who have joined through the insta
+
+select source_of_joining,AVG(years_of_exp) from students GROUP BY source_of_joining;
+
+select location,AVG(years_of_exp) from students GROUP BY location;
+
++-----------+-------------------+
+| location  | AVG(years_of_exp) |
++-----------+-------------------+
+| delhi     |            5.0000 |
+| hyderabad |            3.0000 |
+| punjab    |            3.0000 |
++-----------+-------------------+
+
+the people who have joined me from delhi have on an average 5 yrs of experience
+
+
+people who join me from apple i want to see the people who joining me from apple on an average how much experience they have
+
+
+select student_company,AVG(years_of_exp) from students GROUP BY student_company;
+
+-----------------+-------------------+
+| student_company | AVG(years_of_exp) |
++-----------------+-------------------+
+| apple           |            3.0000 |
+| dell            |            5.0000 |
++-----------------+-------------------+
+
+from dell people have 5 yrs of experience almost on an avg who are joining my course
+
+
+
+
+
+************************************************************************SESSION 9 ***********************************************************
+
+---A FEW MORE DATATYPES
+
+
+if i want to convert course_duration_months to decimal data type instead of integer
+than i will use
+
+insert into courses values(5,'swift',8.5,60000);
+
+it rounds the course_duration_months to 9  instead of 8.5 
+
+
+CREATE TABLE courses_new(
+course_id int NOT NULL,
+course_name varchar(30) NOT NULL,
+course_duration_months DECIMAL(3,1) NOT NULL,
+course_fee INT NOT NULL,
+PRIMARY KEY(course_id)
+);
+
+DECIMAL (3,1) means whatever no. i write here can totaly have maximum 3 digits and one of the digit can be after decimal 
+like 12.5,3.5
+but 3.25 not supported bcz 2 digits after decimal
+
+
+SEED DATA FOR COURSES
+
+INSERT INTO courses_new values(1,'big data',6.2,50000);
+INSERT INTO courses_new values(2,'web development',3.9,25000);
+INSERT INTO courses_new values(3,'data science',2.8,15000);
+INSERT INTO courses_new values(4,'devops',1.3,10000);
+
+
+so with this we can handle the requirement of decimal places rather than supporting integers
+
+if i want to update the course_fee
+
+update courses_new set course_fee = 90000 where course_id=2;
+
+
+
+
+
+if i want to see that at what time that record was inserted what time the record was changed 
+
+i want to make a audit history i.e whenever we make changes or whenver we insert a new course when exactly that has been done in this table
+
+so in this case i am using a time stamp data type
+
+ 
+
+CREATE TABLE courses_new(
+course_id int NOT NULL,
+course_name varchar(30) NOT NULL,
+course_duration_months DECIMAL(3,1) NOT NULL,
+course_fee INT NOT NULL,
+changed_at TIMESTAMP DEFAULT NOW(),
+PRIMARY KEY(course_id)
+);
+ 
+
+i want to insert a col which will tell me at what time the record is inserted like audit kind of thing
+
+we are using a variable which is TIMESTAMP and we are saying we do not expect that we are giving the timestamp you default it to now that means if i am inserting a recorder or updating a record it should be present one
+
+changed at TIMESTAMP DEFAULT NOW()
+
+THE above query will done my timestamp thing 
+
+
+INSERT INTO courses_new(course_id,course_name,course_duration_months,course_fee) values(1,'big data',6.2,50000);
+INSERT INTO courses_new(course_id,course_name,course_duration_months,course_fee) values(2,'web development',3.9,25000);
+INSERT INTO courses_new(course_id,course_name,course_duration_months,course_fee) values(3,'data science',2.8,15000);
+INSERT INTO courses_new(course_id,course_name,course_duration_months,course_fee) values(4,'devops',1.3,10000);
+
+INSERT INTO courses_new(course_id,course_name,course_duration_months,course_fee) values(5,'devops',1.3,10000);
+
++-----------+-----------------+------------------------+------------+---------------------+
+| course_id | course_name     | course_duration_months | course_fee | changed_at          |
++-----------+-----------------+------------------------+------------+---------------------+
+|         1 | big data        |                    6.2 |      50000 | 2023-09-24 17:28:10 |
+|         2 | web development |                    3.9 |      25000 | 2023-09-24 17:28:10 |
+|         3 | data science    |                    2.8 |      15000 | 2023-09-24 17:28:10 |
+|         4 | devops          |                    1.3 |      10000 | 2023-09-24 17:28:10 |
+|         5 | devops          |                    1.3 |      10000 | 2023-09-24 17:29:23 |
++-----------+-----------------+------------------------+------------+---------------------+
+
+inserted the previous 4 records at the same time but 5th record i have inserted at the different time stamp shown in the table
+
+if i update something the table like i update the web development course fee to 40000 and after updating it is showing the same time stamp again but i want to update the time stamp after the update so i will update the table by doing this and i use 
+
+ON UPDATE NOW()  in the timestamp variable
+
+
+CREATE TABLE courses_new(
+course_id int NOT NULL,
+course_name varchar(30) NOT NULL,
+course_duration_months DECIMAL(3,1) NOT NULL,
+course_fee INT NOT NULL,
+changed_at TIMESTAMP DEFAULT NOW() ON UPDATE NOW(),
+PRIMARY KEY(course_id)
+);
+ 
+
+update courses_new set course_fee=60000 where course_id=2;
+
+changed_at TIMESTAMP DEFAULT NOW() this is for inserting and this is for updating ON UPDATE NOW(),
+ans also i can replace NOW() with CURRENT_TIMESTAMP() NO DIFFERENCE BETWEEN THESE TWO
+i.e either i can use NOW() or CURRENT_TIMESTAMP()
+
+
+CREATE TABLE courses_new(
+course_id int NOT NULL,
+course_name varchar(30) NOT NULL,
+course_duration_months DECIMAL(3,1) NOT NULL,
+course_fee INT NOT NULL,
+changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+PRIMARY KEY(course_id)
+);
+
+
+
+
+
+
+DECIMAL DATATYPE (5,3) total 5 decimals and 3 of them are after decimals
+
+TIMESTAMP 
+
+CURRENT_TIMESTAMP() we are using this to make sure that we are using the current date and time and moreover when we do a insert or update how exactly the time stamp gets modified or inserted
+
+
+
+***********************************************************************************SESSION 10 *****************************************************************
+
+Logical Operators
+
+
+i want to find all people who are not from punjab
+
+// to get students who are not from punjab
+select * from students where location !='punjab';      
+
+
+
+//if i want all the courses which have keyword 'data' inside it
+
+select * from courses where course_name like '%data%'
++-----------+--------------+------------------------+------------+
+| course_id | course_name  | course_duration_months | course_fee |
++-----------+--------------+------------------------+------------+
+|         1 | big data     |                      6 |      50000 |
+|         3 | data science |                      3 |      15000 |
++-----------+--------------+------------------------+------------+
+
+
+//if i want all the courses which do not have keyword 'data' inside it
+
+select * from courses where course_name not like '%data%';
+
++-----------+-----------------+------------------------+------------+
+| course_id | course_name     | course_duration_months | course_fee |
++-----------+-----------------+------------------------+------------+
+|         2 | web development |                      3 |      25000 |
+|         4 | devops          |                      1 |      10000 |
+|         5 | swift           |                      8 |      60000 |
+|         6 | swift           |                      9 |      60000 |
++-----------+-----------------+------------------------+------------+
+
+
+//all students from blr who joined through insta and have less than 4 yrs of experience
+
+//if i gave to give multiple condition then i will use and 
+
+select * from students where years_of_exp < 4 and source_of_joining='insta' and location='punjab';
++------------+---------------+---------------+---------------+--------------------+---------------+-------------------------+---------------------+-----------------+--------------+-----------------+------------+-------------------+----------+
+| student_id | student_fname | student_lname | student_mname | student_email      | student_phone | student_alternate_phone | enrollment_date     | selected_course | years_of_exp | student_company | batch_date | source_of_joining | location |
++------------+---------------+---------------+---------------+--------------------+---------------+-------------------------+---------------------+-----------------+--------------+-----------------+------------+-------------------+----------+
+|          2 | MOHIT         | SHARMA        | NULL          | mohit123@gmail.com | 567891        | NULL                    | 2023-09-22 09:11:43 |               4 |            3 | apple           | 05-10-2001 | insta             | punjab   |
+|          3 | TOMMY         | SHARMA        | NULL          | tommy123@gmail.com | 567891        | NULL                    | 2023-09-23 06:17:19 |               4 |            3 | apple           | 05-10-2001 | insta             | punjab   |
++------------+---------------+---------------+---------------+--------------------+---------------+-------------------------+---------------------+-----------------+--------------+-----------------+------------+-------------------+----------+
+
+
+// i want all people who do not fall between 6 to 8 years of experience i.e less than 6 yrs will be fine for me also more than 8 yrs will be fine for me
+
+
+
+ select * from students where  years_of_exp < 6 and years_of_exp > 8 ;   // not works 
+
+bcz we are tossing a coin in which we want head has also come and tail has also come in one simgle toss
+
+
+
+ select * from students where  years_of_exp < 6 or years_of_exp > 8 ;   //any of the statement true then show results
+
+easier waay to do the above operation by using between operator
+
+
+ select * from students where  years_of_exp between 6 and 8 ;   
+but i don't want the above condition students
+
+ select * from students where  years_of_exp not between 1 and 3 ;   
+
+
++------------+---------------+---------------+---------------+--------------------+---------------+-------------------------+---------------------+-----------------+--------------+-----------------+------------+-------------------+----------+
+| student_id | student_fname | student_lname | student_mname | student_email      | student_phone | student_alternate_phone | enrollment_date     | selected_course | years_of_exp | student_company | batch_date | source_of_joining | location |
++------------+---------------+---------------+---------------+--------------------+---------------+-------------------------+---------------------+-----------------+--------------+-----------------+------------+-------------------+----------+
+|          1 | ROHIT         | SHARMA        | NULL          | rohit123@gmail.com | 56789         | NULL                    | 2023-09-22 09:11:42 |               2 |            5 | dell            | 05-05-2001 | linkedin          | delhi    |
++------------+---------------+---------------+---------------+--------------------+---------------+-------------------------+---------------------+-----------------+--------------+-----------------+------------+-------------------+----------+
+
+
+//get list of students who are working for apple ,walmart or dell
+
+select * from students where student_company='apple' or student_company='walmart' or student_company='dell';
+
+
+
+//easier way to do above query by doing the below query as written 
+
+select * from students where student_company in ('apple','dell','walmart');
+
+
+//get list of students who are  not working for apple ,walmart or dell by using not keyword
+
+
+select * from students where student_company not in ('apple','walmart');
+
+
++------------+---------------+---------------+---------------+--------------------+---------------+-------------------------+---------------------+-----------------+--------------+-----------------+------------+-------------------+----------+
+| student_id | student_fname | student_lname | student_mname | student_email      | student_phone | student_alternate_phone | enrollment_date     | selected_course | years_of_exp | student_company | batch_date | source_of_joining | location |
++------------+---------------+---------------+---------------+--------------------+---------------+-------------------------+---------------------+-----------------+--------------+-----------------+------------+-------------------+----------+
+|          1 | ROHIT         | SHARMA        | NULL          | rohit123@gmail.com | 56789         | NULL                    | 2023-09-22 09:11:42 |               2 |            5 | dell            | 05-05-2001 | linkedin          | delhi    |
++------------+---------------+---------------+---------------+--------------------+---------------+-------------------------+---------------------+-----------------+--------------+-----------------+------------+-------------------+----------+
+
+
+// if a course is  more than 6 months we categorize it as masters program else it is a diploma 
+
+//in this case we use case statements and course_type we are creating a new column 
+
+select course_id,course_name,course_fee,
+CASE 
+WHEN course_duration_months > 4 THEN 'masters'
+ELSE 'diploma'
+END as course_type
+from courses;
+
++-----------+-----------------+------------+-------------+
+| course_id | course_name     | course_fee | course_type |
++-----------+-----------------+------------+-------------+
+|         1 | big data        |      50000 | masters     |
+|         2 | web development |      25000 | diploma     |
+|         3 | data science    |      15000 | diploma     |
+|         4 | devops          |      10000 | diploma     |
+|         5 | swift           |      60000 | masters     |
+|         6 | swift           |      60000 | masters     |
++-----------+-----------------+------------+-------------+
+
+//people working for apple ,meta,flipkart we want to say product based and all other service based
+/i have to write my logic in the CASE and i am creating a new column called student_type in END 
+
+select student_id,student_fname,student_lname,student_company, 
+CASE
+WHEN student_company in ('apple','meta','flipkart') THEN 'product based'
+WHEN studnent_company is NULL THEN 'invalid company'
+ELSE 'service based'
+END as company_type
+from students;
+
+//null will also in service based bcz it is other from the apple , meta and flipkart
+
+In this way we can use CASE statement to have a logic inside it and there can be multiple conditions WHEN THEN 
+
++------------+---------------+---------------+-----------------+---------------+
+| student_id | student_fname | student_lname | student_company | company_type  |
++------------+---------------+---------------+-----------------+---------------+
+|          1 | ROHIT         | SHARMA        | dell            | service based |
+|          2 | MOHIT         | SHARMA        | apple           | product based |
+|          3 | TOMMY         | SHARMA        | apple           | product based |
+|          4 | RONNY         | JAIN          | apple           | product based |
++------------+---------------+---------------+-----------------+---------------+
+
+
+In Session 10  we have covered :-   != , not like , not in ,between and CASE statements 
+
+
+
+************************************************************SESSION 11 *******************************************************
+===============
+JOINS
+
+I want to know in which course ronny has enrolled
+
+students
+==========
+studnent_fname,selected_course
+ROHIT , 2
+
+courses
+===========
+
+course_id,course_name
+4,devops
+
+
+nested query 
+
+select course_name from courses where course_id = (
+select selected_course from students where student_fname='ROhit';
+)
+
++-----------------+
+| course_name     |
++-----------------+
+| web development |
++-----------------+
+
+
+in students table selected_course
+in courses table course_id
+
+the join will be happening on course_id and selected_course column 
+
+
+select students.student_fname,students.student_lname,courses.course_name from students join courses on students.selected_course=courses.course_id;
+
+
+By default it is a inner join :- in this join only the matches records or the records which are available in both the tables fetches result and considered and non matching records will not be considered and ignored .
+
++---------------+---------------+-----------------+
+| student_fname | student_lname | course_name     |
++---------------+---------------+-----------------+
+| ROHIT         | SHARMA        | web development |
+| MOHIT         | SHARMA        | devops          |
+| TOMMY         | SHARMA        | devops          |
+| RONNY         | JAIN          | devops          |
++---------------+---------------+-----------------+
+
+
+
+
+Left outer join:-
+==================
+all the matching records are considered that means when in left table there is a match all those are considered 
++ apart from this 
+we have all the records of all the non matching records in the left table which does not have the match in the right table
+i.e a record which is in the left table but not there in right will also be coming
+
+
+i have to create the copy of tables quickly without taking the constraints like foreign key 
+
+create table students_latest as select * from students;
+create table courses_latest as select * from courses;
+
+what the above query will do  it will create a new table student_latest with almost the same structure as student and it will copy the data from students to students_latest but that foreign key constraint and all will not be there
+
+i have to delete the web development course
+delete from courses_latest where course_id=2;
+
+
+
+//applying Inner join 
+select students_latest.student_fname,students_latest.student_lname,courses_latest.course_name from students_latest join courses_latest on students_latest.selected_course=courses_latest.course_id;
+
+
+
++---------------+---------------+-------------+
+| student_fname | student_lname | course_name |
++---------------+---------------+-------------+
+| MOHIT         | SHARMA        | devops      |
+| TOMMY         | SHARMA        | devops      |
+| RONNY         | JAIN          | devops      |
++---------------+---------------+-------------+
+
+web development course is removed
+
+
+performing left outer join 
+
+we should have to give the keyword left
+
+select students_latest.student_fname,students_latest.student_lname,courses_latest.course_name from students_latest left join courses_latest on students_latest.selected_course=courses_latest.course_id;
+
+
+---------------+---------------+-------------+
+| student_fname | student_lname | course_name |
++---------------+---------------+-------------+
+| MOHIT         | SHARMA        | devops      |
+| TOMMY         | SHARMA        | devops      |
+| RONNY         | JAIN          | devops      |
+| ROHIT         | SHARMA        | NULL        |
++---------------+---------------+-------------+
+
+
+all the matching records from left and right table are considered  
++  
+we have all the records of all the non matching records in the left table which does not have the match in the right table padded with nulls
+i.e a record which is in the left table but not there in right will also be coming
+
+
+
+RIGHT OUTER JOIN
+=================
+
+
+all the matching records from left and right table are considered  
++  
+we have all the records of all the non matching records in the right table which does not have the match in the left table padded with null...
+i.e a record which is in the right table but not there in left will also be coming
+
+
+select students_latest.student_fname,students_latest.student_lname,courses_latest.course_name from students_latest right join courses_latest on students_latest.selected_course=courses_latest.course_id;
+
++---------------+---------------+--------------+
+| student_fname | student_lname | course_name  |
++---------------+---------------+--------------+
+| MOHIT         | SHARMA        | devops       |
+| TOMMY         | SHARMA        | devops       |
+| RONNY         | JAIN          | devops       |
+| NULL          | NULL          | big data     |
+| NULL          | NULL          | data science |
+| NULL          | NULL          | swift        |
+| NULL          | NULL          | swift        |
++---------------+---------------+--------------+
+
+
+swift,data science ,big data which are in the right table but not are in the left table are null
+
+
+
+FULL OUTER JOIN
+================
+all the matching records
++
+non matching records from left
++
+non matching records from right
+
+i.e combination of left outer join and right outer join
+
+in mysql we have no keyword like full outer join so we simulate in my sql by using union  
+
+
+
+
+
+select students_latest.student_fname,students_latest.student_lname,courses_latest.course_name from students_latest left join courses_latest on students_latest.selected_course=courses_latest.course_id
+union 
+select students_latest.student_fname,students_latest.student_lname,courses_latest.course_name from students_latest right join courses_latest on students_latest.selected_course=courses_latest.course_id;
+
++---------------+---------------+--------------+
+| student_fname | student_lname | course_name  |
++---------------+---------------+--------------+
+| MOHIT         | SHARMA        | devops       |
+| TOMMY         | SHARMA        | devops       |
+| RONNY         | JAIN          | devops       |
+| ROHIT         | SHARMA        | NULL         |
+| NULL          | NULL          | big data     |
+| NULL          | NULL          | data science |
+| NULL          | NULL          | swift        |
++---------------+---------------+--------------+
+ 
+Rohit sharma is a part of left outer join and and then the below three data are of right outer join
+
+
+lets say we get 8 records from left outer join and 10 records from outer join it will remove the duplicates but it will give us all the distinct records one timeso it will combine these 2 together as a single result 
+
+
+Inner Join
+Left Outer Join
+Right Outer Join
+Full Outer Join  we done full outer join using union bcz there is no keyword named full outer join in mysql
+Cross Join
+=============
+
+i have 6 courses, 4 students
+after cross join i have 24 
+select * from student,courses;
+Cross join not useful more
+suppose in left table i have 4 records and in right table i have 7 records then it will try to combine each record on the left table with every record on the right so that the number of records will be 4 * 7 = 28
+
+Its a very costly join bcz each record on the left table will be combined or mapped with all the records in the right table
+
+select * from students join courses;
+
+i.e we are giving the join clause but we are not giving the condition saying okay this column we want to match and all
+so everything will match with every kind of 
+not useful 
+
+
+
+
+
